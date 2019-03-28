@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Hello!</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- import the webpage's stylesheet -->
+    <!-- <link rel="stylesheet" href="/style.css"> -->
+    
+    <!-- import the webpage's javascript file -->
+   <!--  <script src="/script.js" defer></script> -->
+    <script src="face-api.js"></script>
+  </head>  
+  <body>
+    <img id="myImage" src="image.jpeg">
+  </body>
+
+  <script type="text/javascript">
+    const MODEL_URL = 'models'
+    const input = document.getElementById('myImage')
+
+    async function model() {
+      await faceapi.loadSsdMobilenetv1Model(MODEL_URL)
+      await faceapi.loadFaceLandmarkModel(MODEL_URL)
+      await faceapi.loadFaceRecognitionModel(MODEL_URL)
+      
+      let fullFaceDescriptions = await faceapi.detectAllFaces(input).withFaceLandmarks().withFaceDescriptors()
+
+      fullFaceDescriptions = fullFaceDescriptions.map(fd => fd.forSize(width, height))
+
+
+      const detectionsArray = fullFaceDescriptions.map(fd => fd.detection)
+      faceapi.drawDetection(canvas, detectionsArray, { withScore: true })
+    }
+
+    model();
+  </script>
+</html>
